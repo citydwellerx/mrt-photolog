@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gratitude MRT</title>
     
-    <!-- 1. Load Tailwind (The Magic Script) -->
+    <!-- 1. Load Tailwind from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- 2. Configure Tailwind (Dark Mode, Colors, Animations) -->
+    <!-- 2. Configure Tailwind -->
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -37,19 +37,21 @@
       }
     </script>
 
-    <!-- 3. Custom Scrollbars & Base Styles -->
+    <!-- 3. Custom CSS -->
     <style>
+      /* Scrollbar Styling */
       ::-webkit-scrollbar { width: 8px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
       .dark ::-webkit-scrollbar-thumb { background: #475569; }
+      
       body, #root { min-height: 100vh; }
     </style>
   </head>
   
   <body class="bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100 transition-colors duration-300 min-h-screen font-sans">
     <div id="root"></div>
-    <!-- Connect to your App -->
     <script type="module" src="/main.tsx"></script>
   </body>
 </html>
+
