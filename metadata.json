@@ -1,0 +1,5 @@
+{
+  "name": "MRT Photolog ",
+  "description": "A visual gratitude journal for tracking your Singapore MRT station visits. Upload photos, get AI captions, and track your progress across the island.",
+  "requestFramePermissions": []
+}
