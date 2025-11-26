@@ -1,59 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MRT Photolog</title>
-    
-    <!-- 1. Load Tailwind directly from the web (The "Old Way") -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 2. Configure Tailwind right here -->
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            colors: {
-              // Custom colors used in your App.tsx
-              offwhite: '#f8fafc',
-              offblack: '#1e293b',
-            },
-            keyframes: {
-              fadeIn: {
-                '0%': { opacity: '0' },
-                '100%': { opacity: '1' },
-              },
-              slideUp: {
-                '0%': { transform: 'translateY(20px)', opacity: '0' },
-                '100%': { transform: 'translateY(0)', opacity: '1' },
-              }
-            },
-            animation: {
-              'fade-in': 'fadeIn 0.2s ease-out',
-              'slide-up': 'slideUp 0.3s ease-out',
-            }
-          }
-        }
-      }
-    </script>
-
-    <!-- 3. Custom Scrollbar Styles -->
-    <style>
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-      .dark ::-webkit-scrollbar-thumb { background: #475569; }
-      
-      /* Ensure full height */
-      body, #root { min-height: 100vh; }
-    </style>
+    <title>Gratitude MRT</title>
   </head>
-  
-  <body class="bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100 transition-colors duration-300 min-h-screen font-sans selection:bg-pink-500 selection:text-white">
+  <body>
     <div id="root"></div>
-    
-    <!-- 4. The App Entry Point -->
     <script type="module" src="/main.tsx"></script>
   </body>
 </html>
