@@ -1,11 +1,10 @@
-
 import { MRTLine } from './types';
 
 export const MRT_LINES: MRTLine[] = [
   {
     id: 'EWL',
     name: 'East-West Line',
-    colorClass: 'bg-green-600', // Fixed: Standard Tailwind Green
+    colorClass: 'bg-green-600',
     stations: [
       { code: 'EW1', name: 'Pasir Ris' },
       { code: 'EW2', name: 'Tampines' },
@@ -45,7 +44,7 @@ export const MRT_LINES: MRTLine[] = [
   {
     id: 'NSL',
     name: 'North-South Line',
-    colorClass: 'bg-red-600', // Fixed: Standard Tailwind Red
+    colorClass: 'bg-red-600',
     stations: [
       { code: 'NS1', name: 'Jurong East' },
       { code: 'NS2', name: 'Bukit Batok' },
@@ -79,7 +78,7 @@ export const MRT_LINES: MRTLine[] = [
   {
     id: 'NEL',
     name: 'North East Line',
-    colorClass: 'bg-purple-600', // Fixed: Standard Tailwind Purple
+    colorClass: 'bg-purple-600',
     stations: [
       { code: 'NE1', name: 'HarbourFront' },
       { code: 'NE3', name: 'Outram Park' },
@@ -103,7 +102,7 @@ export const MRT_LINES: MRTLine[] = [
   {
     id: 'CCL',
     name: 'Circle Line',
-    colorClass: 'bg-orange-500', // Fixed: Orange for Circle Line
+    colorClass: 'bg-orange-500',
     stations: [
       { code: 'CC1', name: 'Dhoby Ghaut' },
       { code: 'CC2', name: 'Bras Basah' },
@@ -140,12 +139,12 @@ export const MRT_LINES: MRTLine[] = [
   {
     id: 'DTL',
     name: 'Downtown Line',
-    colorClass: 'bg-blue-600', // Fixed: Standard Tailwind Blue
+    colorClass: 'bg-blue-600',
     stations: [
       { code: 'DT1', name: 'Bukit Panjang' },
       { code: 'DT2', name: 'Cashew' },
       { code: 'DT3', name: 'Hillview' },
-      { code: 'DT4', name: 'Hume' },
+      { code: 'DT4', name: 'Hume' }, 
       { code: 'DT5', name: 'Beauty World' },
       { code: 'DT6', name: 'King Albert Park' },
       { code: 'DT7', name: 'Sixth Avenue' },
@@ -184,7 +183,7 @@ export const MRT_LINES: MRTLine[] = [
   {
     id: 'TEL',
     name: 'Thomson-East Coast Line',
-    colorClass: 'bg-amber-900', // Fixed: Amber/Brown for TEL
+    colorClass: 'bg-amber-900',
     stations: [
       { code: 'TE1', name: 'Woodlands North' },
       { code: 'TE2', name: 'Woodlands' },
@@ -220,7 +219,7 @@ export const MRT_LINES: MRTLine[] = [
   {
     id: 'BPLRT',
     name: 'Bukit Panjang LRT',
-    colorClass: 'bg-slate-500', // Fixed: Gray for LRT
+    colorClass: 'bg-slate-500',
     stations: [
       { code: 'BP1', name: 'Choa Chu Kang' },
       { code: 'BP2', name: 'South View' },
