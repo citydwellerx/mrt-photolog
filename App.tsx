@@ -25,7 +25,13 @@ const uploadImage = async (file: File): Promise<string> => {
     { method: 'POST', body: formData }
   );
 
-  if (!response.ok) throw new Error('Upload failed');
+  if (!response.ok) {
+    // NEW: Get the actual error text from Cloudinary
+    const errorData = await response.json();
+    console.error("Cloudinary Error Details:", errorData);
+    throw new Error(errorData.error?.message || 'Upload failed');
+  }
+  
   const data = await response.json();
   return data.secure_url;
 };
