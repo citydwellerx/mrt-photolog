@@ -145,6 +145,7 @@ export const MRT_LINES: MRTLine[] = [
       { code: 'DT1', name: 'Bukit Panjang' },
       { code: 'DT2', name: 'Cashew' },
       { code: 'DT3', name: 'Hillview' },
+      { code: 'DT4', name: 'Hume' },
       { code: 'DT5', name: 'Beauty World' },
       { code: 'DT6', name: 'King Albert Park' },
       { code: 'DT7', name: 'Sixth Avenue' },
