@@ -1,282 +1,391 @@
-import { MRTLine } from './types';
+import React, { useState, useEffect, useRef } from 'react';
+import { GoogleGenAI } from "@google/genai";
+import { MRT_LINES } from './constants';
+import { MRTLine, Station, VisitLog, VisitMap } from './types';
 
-export const MRT_LINES: MRTLine[] = [
-  {
-    id: 'EWL',
-    name: 'East-West Line',
-    colorClass: 'bg-green-600',
-    stations: [
-      { code: 'EW1', name: 'Pasir Ris' },
-      { code: 'EW2', name: 'Tampines' },
-      { code: 'EW3', name: 'Simei' },
-      { code: 'EW4', name: 'Tanah Merah' },
-      { code: 'EW5', name: 'Bedok' },
-      { code: 'EW6', name: 'Kembangan' },
-      { code: 'EW7', name: 'Eunos' },
-      { code: 'EW8', name: 'Paya Lebar' },
-      { code: 'EW9', name: 'Aljunied' },
-      { code: 'EW10', name: 'Kallang' },
-      { code: 'EW11', name: 'Lavender' },
-      { code: 'EW12', name: 'Bugis' },
-      { code: 'EW13', name: 'City Hall' },
-      { code: 'EW14', name: 'Raffles Place' },
-      { code: 'EW15', name: 'Tanjong Pagar' },
-      { code: 'EW16', name: 'Outram Park' },
-      { code: 'EW17', name: 'Tiong Bahru' },
-      { code: 'EW18', name: 'Redhill' },
-      { code: 'EW19', name: 'Queenstown' },
-      { code: 'EW20', name: 'Commonwealth' },
-      { code: 'EW21', name: 'Buona Vista' },
-      { code: 'EW22', name: 'Dover' },
-      { code: 'EW23', name: 'Clementi' },
-      { code: 'EW24', name: 'Jurong East' },
-      { code: 'EW25', name: 'Chinese Garden' },
-      { code: 'EW26', name: 'Lakeside' },
-      { code: 'EW27', name: 'Boon Lay' },
-      { code: 'EW28', name: 'Pioneer' },
-      { code: 'EW29', name: 'Joo Koon' },
-      { code: 'EW30', name: 'Gul Circle' },
-      { code: 'EW31', name: 'Tuas Crescent' },
-      { code: 'EW32', name: 'Tuas West Road' },
-      { code: 'EW33', name: 'Tuas Link' },
-    ],
-  },
-  {
-    id: 'NSL',
-    name: 'North-South Line',
-    colorClass: 'bg-red-600',
-    stations: [
-      { code: 'NS1', name: 'Jurong East' },
-      { code: 'NS2', name: 'Bukit Batok' },
-      { code: 'NS3', name: 'Bukit Gombak' },
-      { code: 'NS4', name: 'Choa Chu Kang' },
-      { code: 'NS5', name: 'Yew Tee' },
-      { code: 'NS7', name: 'Kranji' },
-      { code: 'NS8', name: 'Marsiling' },
-      { code: 'NS9', name: 'Woodlands' },
-      { code: 'NS10', name: 'Admiralty' },
-      { code: 'NS11', name: 'Sembawang' },
-      { code: 'NS12', name: 'Canberra' },
-      { code: 'NS13', name: 'Yishun' },
-      { code: 'NS14', name: 'Khatib' },
-      { code: 'NS15', name: 'Yio Chu Kang' },
-      { code: 'NS16', name: 'Ang Mo Kio' },
-      { code: 'NS17', name: 'Bishan' },
-      { code: 'NS18', name: 'Braddell' },
-      { code: 'NS19', name: 'Toa Payoh' },
-      { code: 'NS20', name: 'Novena' },
-      { code: 'NS21', name: 'Newton' },
-      { code: 'NS22', name: 'Orchard' },
-      { code: 'NS23', name: 'Somerset' },
-      { code: 'NS24', name: 'Dhoby Ghaut' },
-      { code: 'NS25', name: 'City Hall' },
-      { code: 'NS26', name: 'Raffles Place' },
-      { code: 'NS27', name: 'Marina Bay' },
-      { code: 'NS28', name: 'Marina South Pier' },
-    ]
-  },
-  {
-    id: 'NEL',
-    name: 'North East Line',
-    colorClass: 'bg-purple-600',
-    stations: [
-      { code: 'NE1', name: 'HarbourFront' },
-      { code: 'NE3', name: 'Outram Park' },
-      { code: 'NE4', name: 'Chinatown' },
-      { code: 'NE5', name: 'Clarke Quay' },
-      { code: 'NE6', name: 'Dhoby Ghaut' },
-      { code: 'NE7', name: 'Little India' },
-      { code: 'NE8', name: 'Farrer Park' },
-      { code: 'NE9', name: 'Boon Keng' },
-      { code: 'NE10', name: 'Potong Pasir' },
-      { code: 'NE11', name: 'Woodleigh' },
-      { code: 'NE12', name: 'Serangoon' },
-      { code: 'NE13', name: 'Kovan' },
-      { code: 'NE14', name: 'Hougang' },
-      { code: 'NE15', name: 'Buangkok' },
-      { code: 'NE16', name: 'Sengkang' },
-      { code: 'NE17', name: 'Punggol' },
-      { code: 'NE18', name: 'Punggol Coast' },
-    ]
-  },
-  {
-    id: 'CCL',
-    name: 'Circle Line',
-    colorClass: 'bg-orange-500',
-    stations: [
-      { code: 'CC1', name: 'Dhoby Ghaut' },
-      { code: 'CC2', name: 'Bras Basah' },
-      { code: 'CC3', name: 'Esplanade' },
-      { code: 'CC4', name: 'Promenade' },
-      { code: 'CC5', name: 'Nicoll Highway' },
-      { code: 'CC6', name: 'Stadium' },
-      { code: 'CC7', name: 'Mountbatten' },
-      { code: 'CC8', name: 'Dakota' },
-      { code: 'CC9', name: 'Paya Lebar' },
-      { code: 'CC10', name: 'MacPherson' },
-      { code: 'CC11', name: 'Tai Seng' },
-      { code: 'CC12', name: 'Bartley' },
-      { code: 'CC13', name: 'Serangoon' },
-      { code: 'CC14', name: 'Lorong Chuan' },
-      { code: 'CC15', name: 'Bishan' },
-      { code: 'CC16', name: 'Marymount' },
-      { code: 'CC17', name: 'Caldecott' },
-      { code: 'CC19', name: 'Botanic Gardens' },
-      { code: 'CC20', name: 'Farrer Road' },
-      { code: 'CC21', name: 'Holland Village' },
-      { code: 'CC22', name: 'Buona Vista' },
-      { code: 'CC23', name: 'one-north' },
-      { code: 'CC24', name: 'Kent Ridge' },
-      { code: 'CC25', name: 'Haw Par Villa' },
-      { code: 'CC26', name: 'Pasir Panjang' },
-      { code: 'CC27', name: 'Labrador Park' },
-      { code: 'CC28', name: 'Telok Blangah' },
-      { code: 'CC29', name: 'HarbourFront' },
-      { code: 'CE1', name: 'Bayfront' },
-      { code: 'CE2', name: 'Marina Bay' },
-    ]
-  },
-  {
-    id: 'DTL',
-    name: 'Downtown Line',
-    colorClass: 'bg-blue-600',
-    stations: [
-      { code: 'DT1', name: 'Bukit Panjang' },
-      { code: 'DT2', name: 'Cashew' },
-      { code: 'DT3', name: 'Hillview' },
-      { code: 'DT4', name: 'Hume' }, 
-      { code: 'DT5', name: 'Beauty World' },
-      { code: 'DT6', name: 'King Albert Park' },
-      { code: 'DT7', name: 'Sixth Avenue' },
-      { code: 'DT8', name: 'Tan Kah Kee' },
-      { code: 'DT9', name: 'Botanic Gardens' },
-      { code: 'DT10', name: 'Stevens' },
-      { code: 'DT11', name: 'Newton' },
-      { code: 'DT12', name: 'Little India' },
-      { code: 'DT13', name: 'Rochor' },
-      { code: 'DT14', name: 'Bugis' },
-      { code: 'DT15', name: 'Promenade' },
-      { code: 'DT16', name: 'Bayfront' },
-      { code: 'DT17', name: 'Downtown' },
-      { code: 'DT18', name: 'Telok Ayer' },
-      { code: 'DT19', name: 'Chinatown' },
-      { code: 'DT20', name: 'Fort Canning' },
-      { code: 'DT21', name: 'Bencoolen' },
-      { code: 'DT22', name: 'Jalan Besar' },
-      { code: 'DT23', name: 'Bendemeer' },
-      { code: 'DT24', name: 'Geylang Bahru' },
-      { code: 'DT25', name: 'Mattar' },
-      { code: 'DT26', name: 'MacPherson' },
-      { code: 'DT27', name: 'Ubi' },
-      { code: 'DT28', name: 'Kaki Bukit' },
-      { code: 'DT29', name: 'Bedok North' },
-      { code: 'DT30', name: 'Bedok Reservoir' },
-      { code: 'DT31', name: 'Tampines West' },
-      { code: 'DT32', name: 'Tampines' },
-      { code: 'DT33', name: 'Tampines East' },
-      { code: 'DT34', name: 'Upper Changi' },
-      { code: 'DT35', name: 'Expo' },
-      { code: 'DT36', name: 'Xilin' },
-      { code: 'DT37', name: 'Sungei Bedok' },
-    ]
-  },
-  {
-    id: 'TEL',
-    name: 'Thomson-East Coast Line',
-    colorClass: 'bg-amber-900',
-    stations: [
-      { code: 'TE1', name: 'Woodlands North' },
-      { code: 'TE2', name: 'Woodlands' },
-      { code: 'TE3', name: 'Woodlands South' },
-      { code: 'TE4', name: 'Springleaf' },
-      { code: 'TE5', name: 'Lentor' },
-      { code: 'TE6', name: 'Mayflower' },
-      { code: 'TE7', name: 'Bright Hill' },
-      { code: 'TE8', name: 'Upper Thomson' },
-      { code: 'TE9', name: 'Caldecott' },
-      { code: 'TE10', name: 'Mount Pleasant' },
-      { code: 'TE11', name: 'Stevens' },
-      { code: 'TE12', name: 'Napier' },
-      { code: 'TE13', name: 'Orchard Boulevard' },
-      { code: 'TE14', name: 'Orchard' },
-      { code: 'TE15', name: 'Great World' },
-      { code: 'TE16', name: 'Havelock' },
-      { code: 'TE17', name: 'Outram Park' },
-      { code: 'TE18', name: 'Maxwell' },
-      { code: 'TE19', name: 'Shenton Way' },
-      { code: 'TE20', name: 'Marina Bay' },
-      { code: 'TE21', name: 'Marina South' },
-      { code: 'TE22', name: 'Gardens by the Bay' },
-      { code: 'TE23', name: 'Tanjong Rhu' },
-      { code: 'TE24', name: 'Katong Park' },
-      { code: 'TE25', name: 'Tanjong Katong' },
-      { code: 'TE26', name: 'Marine Parade' },
-      { code: 'TE27', name: 'Marine Terrace' },
-      { code: 'TE28', name: 'Siglap' },
-      { code: 'TE29', name: 'Bayshore' },
-    ]
-  },
-  {
-    id: 'BPLRT',
-    name: 'Bukit Panjang LRT',
-    colorClass: 'bg-slate-500',
-    stations: [
-      { code: 'BP1', name: 'Choa Chu Kang' },
-      { code: 'BP2', name: 'South View' },
-      { code: 'BP3', name: 'Keat Hong' },
-      { code: 'BP4', name: 'Teck Whye' },
-      { code: 'BP5', name: 'Phoenix' },
-      { code: 'BP6', name: 'Bukit Panjang' },
-      { code: 'BP7', name: 'Petir' },
-      { code: 'BP8', name: 'Pending' },
-      { code: 'BP9', name: 'Bangkit' },
-      { code: 'BP10', name: 'Fajar' },
-      { code: 'BP11', name: 'Segar' },
-      { code: 'BP12', name: 'Jelapang' },
-      { code: 'BP13', name: 'Senja' },
-    ]
-  },
-  {
-    id: 'SKLRT',
-    name: 'Sengkang LRT',
-    colorClass: 'bg-slate-500',
-    stations: [
-      { code: 'STC', name: 'Sengkang' },
-      { code: 'SE1', name: 'Compassvale' },
-      { code: 'SE2', name: 'Rumbia' },
-      { code: 'SE3', name: 'Bakau' },
-      { code: 'SE4', name: 'Kangkar' },
-      { code: 'SE5', name: 'Ranggung' },
-      { code: 'SW1', name: 'Cheng Lim' },
-      { code: 'SW2', name: 'Farmway' },
-      { code: 'SW3', name: 'Kupang' },
-      { code: 'SW4', name: 'Thanggam' },
-      { code: 'SW5', name: 'Fernvale' },
-      { code: 'SW6', name: 'Layar' },
-      { code: 'SW7', name: 'Tongkang' },
-      { code: 'SW8', name: 'Renjong' },
-    ]
-  },
-  {
-    id: 'PGLRT',
-    name: 'Punggol LRT',
-    colorClass: 'bg-slate-500',
-    stations: [
-      { code: 'PTC', name: 'Punggol' },
-      { code: 'PE1', name: 'Cove' },
-      { code: 'PE2', name: 'Meridian' },
-      { code: 'PE3', name: 'Coral Edge' },
-      { code: 'PE4', name: 'Riviera' },
-      { code: 'PE5', name: 'Kadaloor' },
-      { code: 'PE6', name: 'Oasis' },
-      { code: 'PE7', name: 'Damai' },
-      { code: 'PW1', name: 'Sam Kee' },
-      { code: 'PW2', name: 'Teck Lee' },
-      { code: 'PW3', name: 'Punggol Point' },
-      { code: 'PW4', name: 'Samudera' },
-      { code: 'PW5', name: 'Nibong' },
-      { code: 'PW6', name: 'Sumang' },
-      { code: 'PW7', name: 'Soo Teck' },
-    ]
-  }
-];
+// Safely access API Key for Vite Environment
+const getApiKey = (): string | undefined => {
+  // @ts-ignore
+  return import.meta.env.VITE_GOOGLE_API_KEY;
+};
+
+// --- Components ---
+
+const LineHeader = ({ line, isExpanded, onClick, progress }: { line: MRTLine, isExpanded: boolean, onClick: () => void, progress: string }) => (
+  <button 
+    onClick={onClick}
+    className={`w-full flex items-center justify-between p-4 mb-2 rounded-xl shadow-sm transition-all duration-300 border border-stone-100 dark:border-stone-800
+      ${isExpanded 
+        ? 'bg-white dark:bg-stone-800 ring-2 ring-offset-2 ring-stone-200 dark:ring-offset-stone-900' 
+        : 'bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700'
+      }`}
+  >
+    <div className="flex items-center gap-4">
+      <div className={`w-2 h-10 rounded-full ${line.colorClass}`} />
+      <div className="text-left">
+        <h3 className="font-bold text-lg text-stone-800 dark:text-stone-100">{line.name}</h3>
+        <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mt-0.5">{progress} Stations</p>
+      </div>
+    </div>
+    <div className={`p-2 rounded-full bg-stone-50 dark:bg-stone-700 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>
+      <svg className="w-5 h-5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  </button>
+);
+
+const StationBubble = ({ station, visit, line, onClick }: { station: Station, visit?: VisitLog, line: MRTLine, onClick: () => void }) => {
+  const hasPhoto = !!visit?.imageData;
+
+  return (
+    <button 
+      onClick={onClick}
+      className={`relative group flex flex-col items-center justify-center aspect-square rounded-2xl overflow-hidden transition-all duration-300
+        ${!visit 
+          ? 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700' 
+          : hasPhoto 
+            ? 'bg-stone-900 ring-2 ring-offset-1 ring-transparent hover:ring-blue-400 dark:ring-offset-stone-900' 
+            : `${line.colorClass} shadow-lg bg-opacity-90`
+        }
+      `}
+    >
+      {hasPhoto ? (
+        <>
+          <img src={visit!.imageData} alt={station.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-60" />
+          
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/40" />
+          
+          {/* Station Code (Top Left) */}
+          <span className="absolute top-2 left-2 bg-black/40 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-full border border-white/10">
+            {station.code}
+          </span>
+
+          {/* Station Name (Bottom Center) */}
+          <div className="absolute bottom-2 left-1 right-1 text-center">
+            <p className="text-[10px] font-bold text-white leading-tight drop-shadow-md line-clamp-2">
+              {station.name}
+            </p>
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center justify-center p-2 text-center w-full h-full">
+          <span className={`text-sm font-black font-mono mb-1 ${visit ? 'text-white' : 'text-stone-400 dark:text-stone-500 group-hover:text-stone-600 dark:group-hover:text-stone-300'}`}>
+            {station.code}
+          </span>
+          <span className={`text-[10px] font-medium leading-tight line-clamp-2 w-full ${visit ? 'text-white/90' : 'text-stone-500 dark:text-stone-600'}`}>
+            {station.name}
+          </span>
+        </div>
+      )}
+    </button>
+  );
+};
+
+// --- Main App ---
+
+export default function App() {
+  const [isDark, setIsDark] = useState(false);
+  const [expandedLineId, setExpandedLineId] = useState<string | null>('EWL');
+  const [visitMap, setVisitMap] = useState<VisitMap>({});
+  const [selectedStationData, setSelectedStationData] = useState<{station: Station, line: MRTLine} | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoadingCaption, setIsLoadingCaption] = useState(false);
+
+  // Edit Form State
+  const [tempVisit, setTempVisit] = useState<VisitLog | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Initialize
+  useEffect(() => {
+    // Theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
+    }
+
+    // Data
+    try {
+      const savedData = localStorage.getItem('sg_rail_journey_visits');
+      if (savedData) {
+        setVisitMap(JSON.parse(savedData));
+      }
+    } catch (e) {
+      console.error("Error loading saved data", e);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newMode = !isDark;
+    setIsDark(newMode);
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
+
+  const handleStationClick = (station: Station, line: MRTLine) => {
+    setSelectedStationData({ station, line });
+    const existing = visitMap[station.code];
+    setTempVisit(existing ? { ...existing } : { 
+      stationCode: station.code, 
+      visitedDate: new Date().toISOString().split('T')[0] 
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !tempVisit) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64 = reader.result as string;
+      setTempVisit(prev => prev ? { ...prev, imageData: base64 } : null);
+
+      // AI Captioning - Only if API Key exists
+      const apiKey = getApiKey();
+      if (apiKey) {
+        setIsLoadingCaption(true);
+        try {
+          const ai = new GoogleGenAI({ apiKey });
+          const base64Data = base64.split(',')[1];
+          const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: {
+              parts: [
+                { inlineData: { mimeType: file.type, data: base64Data } },
+                { text: `Write a poetic, 1-sentence gratitude caption about this scene at ${selectedStationData?.station.name} MRT station.` }
+              ]
+            }
+          });
+          setTempVisit(prev => prev ? { ...prev, caption: response.text.trim() } : null);
+        } catch (error) {
+          console.error("AI Error:", error);
+        } finally {
+          setIsLoadingCaption(false);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const saveEntry = () => {
+    if (!tempVisit) return;
+    const newMap = { ...visitMap, [tempVisit.stationCode]: tempVisit };
+    setVisitMap(newMap);
+    localStorage.setItem('sg_rail_journey_visits', JSON.stringify(newMap));
+    setIsModalOpen(false);
+  };
+
+  const deleteEntry = () => {
+    if (!selectedStationData) return;
+    const newMap = { ...visitMap };
+    delete newMap[selectedStationData.station.code];
+    setVisitMap(newMap);
+    localStorage.setItem('sg_rail_journey_visits', JSON.stringify(newMap));
+    setIsModalOpen(false);
+  };
+
+  // Progress Stats
+  const totalStations = MRT_LINES.reduce((sum, line) => sum + line.stations.length, 0);
+  const totalVisited = Object.keys(visitMap).length;
+  const progressPercent = totalStations > 0 ? Math.round((totalVisited / totalStations) * 100) : 0;
+
+  return (
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 text-stone-900 dark:text-stone-100 transition-colors duration-300 font-sans">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-40 bg-white/90 dark:bg-stone-900/90 backdrop-blur-md border-b border-stone-200 dark:border-stone-800 shadow-sm">
+        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="bg-red-600 text-white w-8 h-8 rounded-lg flex items-center justify-center font-bold shadow-red-500/20 shadow-lg">G</div>
+            <span className="font-bold text-lg tracking-tight">Gratitude<span className="text-red-500">MRT</span></span>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
+              {isDark ? '☀️' : '🌙'}
+            </button>
+          </div>
+        </div>
+        {/* Progress Bar */}
+        <div className="h-1 bg-stone-100 dark:bg-stone-800 w-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 transition-all duration-700 ease-out" style={{ width: `${progressPercent}%` }} />
+        </div>
+      </header>
+
+      <main className="max-w-3xl mx-auto px-4 py-8 pb-32 space-y-8">
+        {/* Dashboard Card */}
+        <div className="bg-white dark:bg-stone-900 p-6 rounded-2xl shadow-sm border border-stone-100 dark:border-stone-800 text-center">
+          <h2 className="text-sm font-semibold text-stone-400 uppercase tracking-wider mb-2">My Journey</h2>
+          <div className="flex items-baseline justify-center gap-2">
+            <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-purple-600">{totalVisited}</span>
+            <span className="text-stone-500 font-medium">/ {totalStations} Stations</span>
+          </div>
+          <p className="text-sm text-stone-400 mt-2">{progressPercent}% of Singapore explored</p>
+        </div>
+
+        {/* MRT Lines List */}
+        <div className="space-y-4">
+          {MRT_LINES.map(line => {
+            const lineVisited = line.stations.filter(s => visitMap[s.code]).length;
+            const lineProgress = `${lineVisited}/${line.stations.length}`;
+            
+            return (
+              <div key={line.id}>
+                <LineHeader 
+                  line={line}
+                  isExpanded={expandedLineId === line.id}
+                  onClick={() => setExpandedLineId(expandedLineId === line.id ? null : line.id)}
+                  progress={lineProgress}
+                />
+                <div 
+                  className={`grid grid-cols-4 sm:grid-cols-5 gap-3 overflow-hidden transition-all duration-500 ease-in-out px-1
+                    ${expandedLineId === line.id ? 'max-h-[3000px] opacity-100 py-2' : 'max-h-0 opacity-0'}
+                  `}
+                >
+                  {line.stations.map(station => (
+                    <StationBubble 
+                      key={station.code}
+                      station={station}
+                      line={line}
+                      visit={visitMap[station.code]}
+                      onClick={() => handleStationClick(station, line)}
+                    />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </main>
+
+      {/* Modal Overlay */}
+      {isModalOpen && selectedStationData && (
+        <div 
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6 bg-black/60 backdrop-blur-sm animate-fade-in"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div 
+            onClick={e => e.stopPropagation()}
+            className="w-full sm:max-w-lg bg-white dark:bg-stone-950 rounded-t-3xl sm:rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto animate-slide-up"
+          >
+            {/* Modal Header */}
+            <div className={`p-6 pb-4 border-b border-stone-100 dark:border-stone-900 sticky top-0 bg-white/95 dark:bg-stone-950/95 backdrop-blur z-10 flex justify-between items-center`}>
+              <div>
+                <h2 className="text-2xl font-bold flex items-center gap-2 text-stone-900 dark:text-white">
+                  <span className={`px-2 py-0.5 rounded text-sm text-white ${selectedStationData.line.colorClass}`}>
+                    {selectedStationData.station.code}
+                  </span>
+                  {selectedStationData.station.name}
+                </h2>
+                <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">{selectedStationData.line.name}</p>
+              </div>
+              <button onClick={() => setIsModalOpen(false)} className="p-2 bg-stone-100 dark:bg-stone-800 rounded-full hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors">
+                <svg className="w-5 h-5 text-stone-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 space-y-6">
+              {/* Photo Upload Area */}
+              <div 
+                onClick={() => fileInputRef.current?.click()}
+                className={`group relative aspect-video rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer overflow-hidden transition-all
+                  ${tempVisit?.imageData 
+                    ? 'border-transparent bg-black' 
+                    : 'border-stone-300 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-stone-800'
+                  }
+                `}
+              >
+                {tempVisit?.imageData ? (
+                  <>
+                    <img src={tempVisit.imageData} alt="Memory" className="w-full h-full object-contain" />
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium backdrop-blur-sm">
+                      <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      Change Photo
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-14 h-14 bg-white dark:bg-stone-800 rounded-full flex items-center justify-center mb-3 shadow-sm group-hover:scale-110 transition-transform">
+                      <span className="text-2xl">📸</span>
+                    </div>
+                    <p className="text-sm font-medium text-stone-600 dark:text-stone-400">Add a memory</p>
+                    <p className="text-xs text-stone-400 mt-1">Click to upload photo</p>
+                  </>
+                )}
+                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+              </div>
+
+              {/* Form Fields */}
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1.5 block">Date</label>
+                  <input 
+                    type="date"
+                    value={tempVisit?.visitedDate || ''}
+                    onChange={e => setTempVisit(prev => prev ? { ...prev, visitedDate: e.target.value } : null)}
+                    className="w-full p-3 bg-stone-50 dark:bg-stone-900 rounded-xl border border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-black focus:ring-0 transition-colors text-stone-900 dark:text-stone-100 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">Gratitude Caption</label>
+                    {isLoadingCaption && <span className="text-xs font-medium text-blue-500 animate-pulse flex items-center gap-1">✨ AI Generating...</span>}
+                  </div>
+                  <textarea 
+                    value={tempVisit?.caption || ''}
+                    onChange={e => setTempVisit(prev => prev ? { ...prev, caption: e.target.value } : null)}
+                    placeholder="What are you grateful for?"
+                    rows={3}
+                    className="w-full p-3 bg-stone-50 dark:bg-stone-900 rounded-xl border border-transparent focus:border-blue-500 focus:bg-white dark:focus:bg-black focus:ring-0 transition-colors text-stone-900 dark:text-stone-100 outline-none resize-none"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1.5 block">Highlights ✨</label>
+                    <input 
+                      value={tempVisit?.highlights || ''}
+                      onChange={e => setTempVisit(prev => prev ? { ...prev, highlights: e.target.value } : null)}
+                      className="w-full p-3 bg-stone-50 dark:bg-stone-900 rounded-xl outline-none text-sm focus:ring-2 focus:ring-blue-500/20 text-stone-900 dark:text-stone-100"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1.5 block">Good Food 🍜</label>
+                    <input 
+                      value={tempVisit?.goodFood || ''}
+                      onChange={e => setTempVisit(prev => prev ? { ...prev, goodFood: e.target.value } : null)}
+                      className="w-full p-3 bg-stone-50 dark:bg-stone-900 rounded-xl outline-none text-sm focus:ring-2 focus:ring-blue-500/20 text-stone-900 dark:text-stone-100"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-3 pt-4 border-t border-stone-100 dark:border-stone-800">
+                <button 
+                  onClick={deleteEntry}
+                  className="flex-1 py-3.5 px-6 rounded-xl text-red-500 font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-sm"
+                >
+                  Clear Entry
+                </button>
+                <button 
+                  onClick={saveEntry}
+                  className="flex-[2] py-3.5 px-6 rounded-xl bg-stone-900 dark:bg-white text-white dark:text-black font-bold hover:opacity-90 transition-opacity shadow-lg shadow-black/10 text-sm"
+                >
+                  Save Journey
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
